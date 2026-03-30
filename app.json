@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Daily Lectionary",
+    "slug": "daily-lectionary",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a2e4a"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dailylectionary.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a2e4a"
+      },
+      "package": "com.dailylectionary.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "@react-native-async-storage/async-storage",
+        {
+          "exclude": []
+        }
+      ]
+    ]
+  }
+}
