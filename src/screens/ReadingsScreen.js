@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { getLiturgicalInfo, getSeasonColor, getSeasonAccent } from '../utils/liturgical';
 import { getReadings } from '../data/lectionary';
+import { getDailyOfficeReadings, getDOLYearLabel } from '../utils/dailyOffice';
 import { getAllNotesForDate, getAllHighlightsForDate, saveNote, saveHighlights } from '../utils/storage';
 
 import ReadingCard from '../components/ReadingCard';
@@ -42,7 +43,17 @@ export default function ReadingsScreen() {
   useEffect(() => {
     const info = getLiturgicalInfo(currentDate);
     setLiturgicalInfo(info);
-    setReadings(getReadings(info));
+
+    // Priority: Sunday/feast RCL readings → Daily Office weekday readings
+    const rclReadings = getReadings(info);
+    if (rclReadings) {
+      setReadings({ ...rclReadings, source: 'rcl' });
+    } else if (info?.isWeekday) {
+      const dolReadings = getDailyOfficeReadings(currentDate);
+      setReadings(dolReadings ? { ...dolReadings, source: 'dol' } : null);
+    } else {
+      setReadings(null);
+    }
 
     (async () => {
       const [n, h] = await Promise.all([
@@ -113,10 +124,9 @@ export default function ReadingsScreen() {
             {liturgicalInfo.name}
             {liturgicalInfo.year ? `  ·  Year ${liturgicalInfo.year}` : ''}
           </Text>
-          {liturgicalInfo.isWeekday && liturgicalInfo.sundayDate && (
-            <Text style={[styles.weekdayNote, { color: isDarkHeader ? '#ffffff88' : '#1a2e4a88' }]}>
-              Readings for the week of{' '}
-              {MONTHS[liturgicalInfo.sundayDate.getMonth()]} {liturgicalInfo.sundayDate.getDate()}
+          {readings?.source === 'dol' && (
+            <Text style={[styles.weekdayNote, { color: isDarkHeader ? '#ffffffaa' : '#1a2e4aaa' }]}>
+              Daily Office  ·  {getDOLYearLabel(currentDate)}
             </Text>
           )}
         </View>
